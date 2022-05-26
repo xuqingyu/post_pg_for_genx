@@ -50,6 +50,7 @@ for (y in years) {
     # add in the prior cf
     print('add in the prior cf')
     gen_info <- left_join(gen_info, gen_cf, by = "Resource")
+    print(gen_info[,119])
     print('VOM of battery')
     batteryrows = which(grepl('battery', gen_info$technology))
     gen_info <- gen_info %>%
@@ -85,7 +86,7 @@ for (y in years) {
                Fixed_OM_Cost_per_MWyr = Fixed_OM_Cost_per_MWyr + fom_adder) %>%
         select(-c(inv_annuity_adder,fom_adder, vom_in_adder, vom_out_adder))
     }
-    
+    print('write gen_data.csv')
     write_csv(gen_info, gen_info_fn)
     
     # modify network.csv
