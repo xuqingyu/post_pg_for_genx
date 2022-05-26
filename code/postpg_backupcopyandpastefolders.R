@@ -41,7 +41,7 @@ for (y in years) {
       as_tibble_col(column_name = "CF_prior") %>%
       mutate(CF_prior = round(CF_prior, 4)) %>%
       cbind(resource_name)
-    print(gen_cf, n = 1000)
+    print(gen_cf)
     write_csv(gen_cf, paste0(RunFdr,'temp_capacityfactor.csv'))
     
     # modify generators_data.csv
