@@ -41,7 +41,7 @@ for (y in years) {
       as_tibble_col(column_name = "CF_prior") %>%
       mutate(CF_prior = round(CF_prior, 4)) %>%
       cbind(resource_name)
-      
+    write_csv(gen_cf, paste0(RunFdr,'temp_capacityfactor.csv'))
     
     # modify generators_data.csv
     print('modify generators_data.csv')
@@ -88,7 +88,7 @@ for (y in years) {
     }
     print('write gen_data.csv')
     write_csv(gen_info, gen_info_fn)
-    
+    print('write gen_data.csv finished')
     # modify network.csv
     print('modify network.csv')
     network_info_fn <- paste0(RunFdr,'Network.csv')
