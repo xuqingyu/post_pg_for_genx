@@ -204,10 +204,10 @@ for (y in years) {
     }
     if (grepl('_EnergyCredit', foldernames$case_description[i])) {
       gen_info <- gen_info %>%
-        mutate(EC_Elgibility_1 = MISO_CleanPower,
-               EC_Elgibility_2 = NY_CleanPower,
-               EC_Elgibility_3 = PJM_CleanPower,
-               EC_Elgibility_4 = SERC_CleanPower)
+        mutate(EC_Eligibility_1 = MISO_CleanPower,
+               EC_Eligibility_2 = NY_CleanPower,
+               EC_Eligibility_3 = PJM_CleanPower,
+               EC_Eligibility_4 = SERC_CleanPower)
     } 
     
     write_csv(gen_info, paste0(new_folder,"/Inputs/Generators_data.csv"))
