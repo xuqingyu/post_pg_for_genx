@@ -13,6 +13,7 @@ for (y in years) {
     origin_folder = paste0(workingfolder,fromfolder,'/', y, '/', 
                            origin_folder_list$origin_case_id[j],"_", y, "_",origin_folder_list$origin_case_description[j],'/')
     # modify fuel prices
+    print('modify fuel prices')
     RunFdr = paste0(origin_folder, '/Inputs/')
     if (ngprice_variation == 'census_division') {
       source('./code/postpg_monthlyngvariation.R')
@@ -20,8 +21,9 @@ for (y in years) {
     if (ngprice_variation == 'national') {
       source('./code/postpg_nationalmonthlyngvariation.R')
     }  
-
-    # calculate prior capacity factor 
+    
+    # calculate prior capacity factor
+    print('calculate prior capacity factor')
     # Read in the load profile to construct the time-weight
     t_load = read_csv(paste0(RunFdr,"Load_data.csv"), 
                       col_types = cols())
@@ -42,15 +44,18 @@ for (y in years) {
       
     
     # modify generators_data.csv
+    print('modify generators_data.csv')
     gen_info_fn <- paste0(RunFdr,'Generators_data.csv')
     gen_info <- read_csv(gen_info_fn, col_types = cols());
     # add in the prior cf
+    print('add in the prior cf')
     gen_info <- left_join(gen_info, gen_cf, by = "Resource")
+    print('VOM of battery')
     batteryrows = which(grepl('battery', gen_info$technology))
     gen_info <- gen_info %>%
       mutate(Var_OM_Cost_per_MWh_In = replace(Var_OM_Cost_per_MWh_In, batteryrows, 0.15),
              Var_OM_Cost_per_MWh = replace(Var_OM_Cost_per_MWh, batteryrows, 0.15))
-    
+    print('modify pump hydros duration and min max duration')
     psrows = which(grepl('pumped_storage', gen_info$technology))
     # 15.5 hour is the national average of duration in U.S., reported by Sandia
     psrowscapmwh = 15.5*gen_info$Existing_Cap_MW 
@@ -58,11 +63,12 @@ for (y in years) {
       mutate(Min_Duration = replace(Min_Duration, psrows, 14),
              Max_Duration = replace(Max_Duration, psrows, 16),
              Existing_Cap_MWh = replace(Existing_Cap_MWh, psrows, psrowscapmwh[psrows]))
+    print('Existing wind PTC')
     existingwind_rows = which(grepl('onshore_wind_turbine', gen_info$technology))
     gen_info <- gen_info %>%
       mutate(Var_OM_Cost_per_MWh = replace(Var_OM_Cost_per_MWh, existingwind_rows, -7.2))
     
-    
+    print('CCS and dg cost modification')
     # CCS and dg cost modification
     if (file.exists(region_tech_costadder_fn)){
       region_tech_costadder <- read_csv(region_tech_costadder_fn, col_types = cols()) %>%
@@ -83,6 +89,7 @@ for (y in years) {
     write_csv(gen_info, gen_info_fn)
     
     # modify network.csv
+    print('modify network.csv')
     network_info_fn <- paste0(RunFdr,'Network.csv')
     network_info <- read_csv(network_info_fn, col_types = cols())
     if (file.exists(network_template_fn)){
