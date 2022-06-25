@@ -51,7 +51,6 @@ for (y in years) {
     # add in the prior cf
     print('add in the prior cf')
     gen_info <- left_join(gen_info, gen_cf, by = "Resource")
-    print(gen_info[,119])
     print('VOM of battery')
     batteryrows = which(grepl('battery', gen_info$technology))
     gen_info <- gen_info %>%
