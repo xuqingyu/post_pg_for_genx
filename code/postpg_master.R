@@ -2,9 +2,9 @@ library('tidyverse')
 library('yaml')
 
 
-workingfolder <- "/Users/qingyuxu/Dropbox (Princeton)/PJM/GenX_PJM_Data/2022_PJM_CE/"
-# workingfolder <- "/tigress/qingyux/GenX/PJM/2022_PJM_CE/"
-foldername_fn <- "2022-05-25_names_createnewfolder.csv"
+# workingfolder <- "/Users/qingyuxu/Dropbox (Princeton)/PJM/GenX_PJM_Data/2022_PJM_CE/"
+workingfolder <- "/tigress/qingyux/GenX/PJM/2022_PJM_CE/"
+foldername_fn <- "2022-05-26_names_createnewfolder.csv"
 miscfoldername <- "PJM_misc_files/"
 files_to_copy_from_misc <- c('CO2_credit.csv')
 name_of_shell = 'Run_myopic.sh'
