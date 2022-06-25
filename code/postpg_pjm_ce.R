@@ -65,6 +65,8 @@ for (y in years) {
                    CO_2_Max_LoadRate_1,CO_2_Max_LoadRate_2,CO_2_Max_LoadRate_3,CO_2_Max_LoadRate_4)
           DD_carbon_table[is.na(DD_carbon_table)]<-0
           write_csv(DD_carbon_table, paste0(new_folder,"/Inputs/CO2_loadrate_cap.csv"))
+          file.copy(paste0(misc_filefolder,'/CO2_loadrate_cap_slack.csv',
+                           paste0(new_folder,"/Inputs/CO2_loadrate_cap_slack.csv")))
         }
       }
       setting$CO2LoadRateCap = as.integer(1)
@@ -130,12 +132,14 @@ for (y in years) {
           if (y == 2025) {
             additionalmintech = as_tibble(cbind(MinCapReqConstraint = as.integer(c(22, 23, 24, 25)),
                                                 Constraint_Description = c('MISO_CleanPower', 'NY_CleanPower', 'PJM_CleanPower', 'SERC_CleanPower'),
-                                                Min_MW = temptarget * c(38819, 16762, 94813, 69329)))
+                                                Min_MW = temptarget * c(38819, 16762, 94813, 69329),
+                                                PriceCap = c(99999,99999,99999,99999)))
           }
           if (y == 2030) {
             additionalmintech = as_tibble(cbind(MinCapReqConstraint = as.integer(c(22, 23, 24, 25)),
                                                 Constraint_Description = c('MISO_CleanPower', 'NY_CleanPower', 'PJM_CleanPower', 'SERC_CleanPower'),
-                                                Min_MW = temptarget * c(42560, 18031, 102334, 74212)))
+                                                Min_MW = temptarget * c(42560, 18031, 102334, 74212),
+                                                PriceCap = c(99999,99999,99999,99999)))
           }
         }
       }
