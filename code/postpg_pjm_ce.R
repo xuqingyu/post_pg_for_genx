@@ -65,8 +65,8 @@ for (y in years) {
                    CO_2_Max_LoadRate_1,CO_2_Max_LoadRate_2,CO_2_Max_LoadRate_3,CO_2_Max_LoadRate_4)
           DD_carbon_table[is.na(DD_carbon_table)]<-0
           write_csv(DD_carbon_table, paste0(new_folder,"/Inputs/CO2_loadrate_cap.csv"))
-          file.copy(paste0(misc_filefolder,'/CO2_loadrate_cap_slack.csv',
-                           paste0(new_folder,"/Inputs/CO2_loadrate_cap_slack.csv")))
+          file.copy(paste0(misc_filefolder,'/CO2_loadrate_cap_slack.csv'),
+                           paste0(new_folder,"/Inputs/CO2_loadrate_cap_slack.csv"))
         }
       }
       setting$CO2LoadRateCap = as.integer(1)
@@ -152,7 +152,7 @@ for (y in years) {
     if (grepl('nonewgas', foldernames$case_description[i])) {
       max_tech = read_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"), 
                           col_types = cols()) %>%
-        mutate(Max_MW = 0) %>%
+        mutate(Max_MW = 0, PriceCap = 99999) %>%
         write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
       setting$MaxCapReq = as.integer(1)
     } 
