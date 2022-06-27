@@ -133,13 +133,13 @@ for (y in years) {
             additionalmintech = as_tibble(cbind(MinCapReqConstraint = as.integer(c(22, 23, 24, 25)),
                                                 Constraint_Description = c('MISO_CleanPower', 'NY_CleanPower', 'PJM_CleanPower', 'SERC_CleanPower'),
                                                 Min_MW = temptarget * c(38819, 16762, 94813, 69329),
-                                                PriceCap = c(99999,99999,99999,99999)))
+                                                PriceCap = c(1000000,1000000,1000000,1000000)))
           }
           if (y == 2030) {
             additionalmintech = as_tibble(cbind(MinCapReqConstraint = as.integer(c(22, 23, 24, 25)),
                                                 Constraint_Description = c('MISO_CleanPower', 'NY_CleanPower', 'PJM_CleanPower', 'SERC_CleanPower'),
                                                 Min_MW = temptarget * c(42560, 18031, 102334, 74212),
-                                                PriceCap = c(99999,99999,99999,99999)))
+                                                PriceCap = c(1000000,1000000,1000000,1000000)))
           }
         }
       }
@@ -152,7 +152,7 @@ for (y in years) {
     if (grepl('nonewgas', foldernames$case_description[i])) {
       max_tech = read_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"), 
                           col_types = cols()) %>%
-        mutate(Max_MW = 0, PriceCap = 99999) %>%
+        mutate(Max_MW = 0, PriceCap = 1000000) %>%
         write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
       setting$MaxCapReq = as.integer(1)
     } 
