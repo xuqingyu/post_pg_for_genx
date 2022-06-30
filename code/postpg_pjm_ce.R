@@ -238,7 +238,7 @@ for (y in years) {
     
     # Carbon Tax
     if (grepl('_CarbonTax', foldernames$case_description[i])){
-      setting$`CarbonTax` = as.integer(1)
+      setting$`CO2Tax` = as.integer(1)
       for (lev in c(1:9)) {
         if (grepl(paste0('_CarbonTax',lev), foldernames$case_description[i])) {
           if (y == 2025) {
@@ -252,7 +252,7 @@ for (y in years) {
       Tax_Table = as_tibble(cbind(`Region description` = temp_zonelist,
                                   Network_zones = paste0('z',c(1:15)),
                                   CO2Tax = rep(taxlevel, 15))) %>%
-        write_csv(paste0(new_folder,"/Inputs/Carbon_tax.csv"))
+        write_csv(paste0(new_folder,"/Inputs/CO2_tax.csv"))
     }
     
     # Write yaml
