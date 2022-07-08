@@ -87,7 +87,7 @@ for (y in years) {
                                col_types = cols()) %>%
             mutate(ESR_2 = replace(ESR_2, grepl('PJM_', `Region_description`), temptarget),
                    ESR_5 = replace(ESR_5, grepl('NY_', `Region_description`), temptarget),
-                   ESR_7 = replace(ESR_5, grepl('MIS_', `Region_description`), temptarget),
+                   ESR_7 = replace(ESR_7, grepl('MIS_', `Region_description`), temptarget),
                    ESR_8 = replace(ESR_8, grepl('SC_', `Region_description`), temptarget)) %>%
             write_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"))
         }
