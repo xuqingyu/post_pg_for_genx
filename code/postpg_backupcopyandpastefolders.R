@@ -52,12 +52,12 @@ for (y in years) {
     print('add in the prior cf')
     gen_info <- left_join(gen_info, gen_cf, by = "Resource")
     print('VOM of battery')
-    batteryrows = which(grepl('battery', gen_info$technology))
+    batteryrows = which(grepl('batter', gen_info$Resource))
     gen_info <- gen_info %>%
       mutate(Var_OM_Cost_per_MWh_In = replace(Var_OM_Cost_per_MWh_In, batteryrows, 0.15),
              Var_OM_Cost_per_MWh = replace(Var_OM_Cost_per_MWh, batteryrows, 0.15))
     print('modify pump hydros duration and min max duration')
-    psrows = which(grepl('pumped_storage', gen_info$technology))
+    psrows = which(grepl('pumped_storage', gen_info$Resource))
     # 15.5 hour is the national average of duration in U.S., reported by Sandia
     psrowscapmwh = 15.5*gen_info$Existing_Cap_MW 
     gen_info <- gen_info %>%
@@ -65,7 +65,7 @@ for (y in years) {
              Max_Duration = replace(Max_Duration, psrows, 16),
              Existing_Cap_MWh = replace(Existing_Cap_MWh, psrows, psrowscapmwh[psrows]))
     print('Existing wind PTC')
-    existingwind_rows = which(grepl('onshore_wind_turbine', gen_info$technology))
+    existingwind_rows = which(grepl('onshore_wind_turbine', gen_info$Resource))
     gen_info <- gen_info %>%
       mutate(Var_OM_Cost_per_MWh = replace(Var_OM_Cost_per_MWh, existingwind_rows, -7.2))
     
