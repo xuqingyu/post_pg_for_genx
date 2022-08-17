@@ -26,6 +26,70 @@ for (y in years) {
                                  foldernames$case_id[i],'_', y ,'_',
                                  foldernames$case_description[i],'/Settings')
     setting = read_yaml(paste0(new_settings_folder,'/genx_settings.yml'))
+    # Modify Fuel price
+    originalfuel = read_csv(paste0(new_folder,"/Inputs/Fuels_data.csv"),
+                            col_types = cols())
+    modifiedfuel <- originalfuel
+    fuelnames = colnames(modifiedfuel)
+    fuelrows = c(2:nrow(modifiedfuel))
+    for (k in 2:ncol(modifiedfuel)) {
+      mul = 1
+      if (y == 2025) {
+        if (grepl('highfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 1.824
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 1.111
+          }
+        }
+        if (grepl('mediumfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 1.452
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 1.061
+          }
+        }
+        if (grepl('lowfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 1.043
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 0.995
+          }
+        }
+      }
+      if (y == 2030) {
+        if (grepl('highfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 1.490
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 1.054
+          }
+        }
+        if (grepl('mediumfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 1.000
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 1.000
+          }
+        }
+        if (grepl('lowfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 0.786
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 0.957
+          }
+        }
+      }
+      modifiedfuel[fuelrows, k] = mul * modifiedfuel[fuelrows, k]
+    }
+    write_csv(modifiedfuel, paste0(new_folder,"/Inputs/Fuels_data.csv"))
+    
     # Modify ER cases
     setting$CO2LoadRateCap = as.integer(0)
     ERStringlist = paste(seq(40, 100, 5),'ER',sep = "")
@@ -94,9 +158,21 @@ for (y in years) {
       }
     }
     
+    # CO2 Credit
+    if (grepl('ira_', foldernames$case_description[i])) {
+      co2credit <- read_csv(paste0(misc_filefolder,'/CO2_credit_ira.csv'), 
+                            col_types = cols())
+    } else {
+      co2credit <- read_csv(paste0(misc_filefolder,'/CO2_credit.csv'), 
+                            col_types = cols())      
+    }
+    write_csv(co2credit, paste0(new_folder,"/Inputs/CO2_credit.csv"))
+    rm(co2credit)
+    
+    
     # Min Tech 
     setting$MinCapReq = as.integer(1)
-    if (grepl('nonuclearretire', foldernames$case_description[i])) {
+    if (grepl('ira_', foldernames$case_description[i])) {
       if (y == 2025) {
         min_tech = read_csv(paste0(misc_filefolder,'/mincap2025_yesnuclearsupport.csv'), 
                             col_types = cols())
@@ -146,20 +222,32 @@ for (y in years) {
     write_csv(min_tech, paste0(new_folder,"/Inputs/Minimum_capacity_requirement.csv"))   
     
     # Max Tech 
-    setting$MaxCapReq = as.integer(0)
-    if (grepl('nonewgas', foldernames$case_description[i])) {
-      max_tech = read_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"), 
-                          col_types = cols()) %>%
-        mutate(Max_MW = 0, PriceCap = 1000000) %>%
-        write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
-      setting$MaxCapReq = as.integer(1)
-    } 
-    if (grepl('nglimit', foldernames$case_description[i])) {
-      max_tech = read_csv(paste0(misc_filefolder,'/max_cap_limitedgas.csv'), 
-                          col_types = cols()) %>%
-        write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
-      setting$MaxCapReq = as.integer(1)
+    # setting$MaxCapReq = as.integer(0)
+    # if (grepl('nonewgas', foldernames$case_description[i])) {
+    #   max_tech = read_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"), 
+    #                       col_types = cols()) %>%
+    #     mutate(Max_MW = 0, PriceCap = 1000000) %>%
+    #     write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
+    #   setting$MaxCapReq = as.integer(1)
+    # } 
+    # if (grepl('nglimit', foldernames$case_description[i])) {
+    #   max_tech = read_csv(paste0(misc_filefolder,'/max_cap_limitedgas.csv'), 
+    #                       col_types = cols()) %>%
+    #     write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
+    #   setting$MaxCapReq = as.integer(1)
+    # }
+    setting$MaxCapReq = as.integer(1)
+    if (y == 2025) {
+        max_tech = read_csv(paste0(misc_filefolder,'/max_cap_ira_2025.csv'),
+                            col_types = cols()) %>%
+          write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
     }
+    if (y == 2030) {
+      max_tech = read_csv(paste0(misc_filefolder,'/max_cap_ira_2030.csv'),
+                          col_types = cols()) %>%
+        write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
+    }
+    
     
     # Network
     interregionalline = c('MIS_Central_to_PJM_COMD',
