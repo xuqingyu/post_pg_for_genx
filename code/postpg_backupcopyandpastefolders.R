@@ -68,7 +68,10 @@ for (y in years) {
     existingwind_rows = which(grepl('onshore_wind_turbine', gen_info$technology))
     gen_info <- gen_info %>%
       mutate(Var_OM_Cost_per_MWh = replace(Var_OM_Cost_per_MWh, existingwind_rows, -7.2))
-    
+    print('Turning off Advanced Nuclear')
+    advnuclear_rows = which(grepl('advnuclear',gen_info$technology))
+    gen_info <- gen_info %>%
+	    mutate(New_Build = replace(New_Build, advnuclear_rows,as.integer(0)))
     print('CCS and dg cost modification')
     # CCS and dg cost modification
     if (file.exists(region_tech_costadder_fn)){
