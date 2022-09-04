@@ -90,7 +90,7 @@ for (y in years) {
         select(-c(inv_annuity_adder,fom_adder, vom_in_adder, vom_out_adder))
     }
     gen_info <- gen_info %>%
-      mutate(CapRes_duration_requirement = 2)
+      mutate(CapRes_duration_requirement = 4)
     print('write gen_data.csv')
     write_csv(gen_info, gen_info_fn)
     print('write gen_data.csv finished')
