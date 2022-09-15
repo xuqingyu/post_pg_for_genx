@@ -90,7 +90,7 @@ for (y in years) {
         select(-c(inv_annuity_adder,fom_adder, vom_in_adder, vom_out_adder))
     }
     gen_info <- gen_info %>%
-      mutate(CapRes_duration_requirement = 4)
+      mutate(CapRes_duration_requirement = 8)
     print('write gen_data.csv')
     write_csv(gen_info, gen_info_fn)
     print('write gen_data.csv finished')
@@ -169,7 +169,7 @@ for (y in years) {
       "#SBATCH --ntasks=1                          # total number of tasks across all nodes",
       "#SBATCH --cpus-per-task=6                   # cpu-cores per task (>1 if multi-threaded tasks)",
       "#SBATCH --mem-per-cpu=16G                    # memory per cpu-core",
-      "#SBATCH --time=24:00:00                     # total run time limit (HH:MM:SS)",
+      "#SBATCH --time=23:00:00                     # total run time limit (HH:MM:SS)",
       "#SBATCH --output=\"test.out\" ",
       "#SBATCH --error=\"test.err\" ",
       "#SBATCH --mail-type=end                    # notifications for job done & fail",

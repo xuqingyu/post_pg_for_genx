@@ -42,6 +42,9 @@ for (y in years) {
           if (grepl('_coal', fuelnames[k])) {
             mul = 1.111
           }
+          if (grepl('_distillate', fuelnames[k])) {
+            mul = 1.313
+          }
         }
         if (grepl('mediumfuelcost',foldernames$case_description[i])) {
           if (grepl('_naturalgas', fuelnames[k])) {
@@ -50,6 +53,9 @@ for (y in years) {
           if (grepl('_coal', fuelnames[k])) {
             mul = 1.061
           }
+          if (grepl('_distillate', fuelnames[k])) {
+            mul = 1.198
+          }
         }
         if (grepl('lowfuelcost',foldernames$case_description[i])) {
           if (grepl('_naturalgas', fuelnames[k])) {
@@ -57,6 +63,9 @@ for (y in years) {
           }
           if (grepl('_coal', fuelnames[k])) {
             mul = 0.995
+          }
+          if (grepl('_distillate', fuelnames[k])) {
+            mul = 1.060
           }
         }
       }
@@ -68,12 +77,18 @@ for (y in years) {
           if (grepl('_coal', fuelnames[k])) {
             mul = 1.054
           }
+          if (grepl('_distillate', fuelnames[k])) {
+            mul = 1.103
+          }
         }
         if (grepl('mediumfuelcost',foldernames$case_description[i])) {
           if (grepl('_naturalgas', fuelnames[k])) {
             mul = 1.000
           }
           if (grepl('_coal', fuelnames[k])) {
+            mul = 1.000
+          }
+          if (grepl('_distillate', fuelnames[k])) {
             mul = 1.000
           }
         }
@@ -83,6 +98,44 @@ for (y in years) {
           }
           if (grepl('_coal', fuelnames[k])) {
             mul = 0.957
+          }
+          if (grepl('_distillate', fuelnames[k])) {
+            mul = 0.962
+          }
+        }
+      }
+      if (y == 2035) {
+        if (grepl('highfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 1.615
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 1.068
+          }
+          if (grepl('_distillate', fuelnames[k])) {
+            mul = 1.123
+          }
+        }
+        if (grepl('mediumfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 1.000
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 1.000
+          }
+          if (grepl('_distillate', fuelnames[k])) {
+            mul = 1.000
+          }
+        }
+        if (grepl('lowfuelcost',foldernames$case_description[i])) {
+          if (grepl('_naturalgas', fuelnames[k])) {
+            mul = 0.769
+          }
+          if (grepl('_coal', fuelnames[k])) {
+            mul = 0.941
+          }
+          if (grepl('_distillate', fuelnames[k])) {
+            mul = 0.936
           }
         }
       }
@@ -104,10 +157,11 @@ for (y in years) {
       for (j in 1:length(ERStringlist)) {
         if (grepl(ERStringlist[j], foldernames$case_description[i])) {
           r = ERRatelist[j]
-          if (y %in% c(2022, 2025, 2030)) {
+          if (y %in% c(2022, 2025, 2030, 2035)) {
             carbon_intensity <- tibble(`Region_description` = temp_zonelist, 
-                                       MLoadRate = rep(round(0.415 - (0.415-0.607*r)/(2030-2019)*(as.numeric(y)-2019),3), 
+                                       MLoadRate = rep(max(round(0.415 - (0.415-0.607*r)/(2030-2019)*(as.numeric(y)-2019),3),0.03), 
                                                        length(temp_zonelist)))
+            # Note that 0.03 means 95% emission reduction compared to 2005
           }
           # if (y %in% c(2040, 2050)) {
           #   carbon_intensity <- tibble(`Region_description` = temp_zonelist, 
@@ -141,12 +195,12 @@ for (y in years) {
     if (grepl('CES', foldernames$case_description[i])) {
       for (j in 1:length(CESStringlist)) {
         if (grepl(CESStringlist[j], foldernames$case_description[i])) {
-          if (y %in% c(2022, 2025, 2030)) {
-            temptarget = (CESRatelist[j] - .4)/(2030-2020)*(as.numeric(y) - 2020) + 0.4
+          if (y %in% c(2022, 2025, 2030, 2035)) {
+            temptarget = min((CESRatelist[j] - .4)/(2030-2020)*(as.numeric(y) - 2020) + 0.4,1)
           }
           # if (y %in% c(2040, 2050)) {
           #   temptarget = (1 - CESRatelist[j])/(2050-2030)*(as.numeric(y) - 2030)
-          # }          
+          # }
           ces_table = read_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"), 
                                col_types = cols()) %>%
             mutate(ESR_2 = replace(ESR_2, grepl('PJM_', `Region_description`), temptarget),
@@ -156,6 +210,16 @@ for (y in years) {
             write_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"))
         }
       }
+    }
+    if (grepl('NJ100', foldernames$case_description[i])) {
+      if (y ==2025) {njrpstarget = 0.45; njcestarget = 0.50}
+      if (y ==2030) {njrpstarget = 0.60; njcestarget = 0.75}
+      if (y ==2035) {njrpstarget = 0.75; njcestarget = 1.00}
+      ces_table = read_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"), 
+                           col_types = cols()) %>%
+        mutate(ESR_1 = replace(ESR_1, grepl('PJM_NJ', `Region_description`), njrpstarget),
+               ESR_2 = replace(ESR_2, grepl('PJM_NJ', `Region_description`), njcestarget)) %>%
+        write_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"))
     }
     
     # CO2 Credit
@@ -180,6 +244,10 @@ for (y in years) {
       if (y == 2030) {
         min_tech = read_csv(paste0(misc_filefolder,'/mincap2030_yesnuclearsupport.csv'), 
                             col_types = cols())
+      } 
+      if (y == 2035) {
+        min_tech = read_csv(paste0(misc_filefolder,'/mincap2035_yesnuclearsupport.csv'), 
+                            col_types = cols())
       }      
     } else {
       if (y == 2025) {
@@ -189,7 +257,11 @@ for (y in years) {
       if (y == 2030) {
         min_tech = read_csv(paste0(misc_filefolder,'/mincap2030_nonuclearsupport.csv'), 
                             col_types = cols())
-      }
+      } 
+      if (y == 2035) {
+        min_tech = read_csv(paste0(misc_filefolder,'/mincap2035_nonuclearsupport.csv'), 
+                            col_types = cols())
+      } 
     }
     
     # Modify Clean Capacity mechanism
@@ -248,6 +320,17 @@ for (y in years) {
         write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
     }
     
+    if (y == 2035) {
+      if (grepl('NJ100', foldernames$case_description[i])) {
+        max_tech = read_csv(paste0(misc_filefolder,'/max_cap_ira_2035_nj100.csv'),
+                            col_types = cols()) %>%
+          write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))        
+      } else {
+        max_tech = read_csv(paste0(misc_filefolder,'/max_cap_ira_2035.csv'),
+                            col_types = cols()) %>%
+          write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
+      }
+    }
     
     # Network
     interregionalline = c('MIS_Central_to_PJM_COMD',
@@ -285,6 +368,12 @@ for (y in years) {
       gen_info <- gen_info %>%
         left_join(mga, by = 'Resource')
     }
+    if (y == 2035) {
+      mga = read_csv(paste0(misc_filefolder,'/mga_columns.csv'), 
+                     col_types = cols())
+      gen_info <- gen_info %>%
+        left_join(mga, by = 'Resource')
+    }
     if (grepl('CECAP', foldernames$case_description[i])) {
       gen_info <- gen_info %>%
         mutate(MinCapTag_22 = MISO_CleanPower * CF_prior,
@@ -299,6 +388,29 @@ for (y in years) {
                EC_Eligibility_3 = PJM_CleanPower,
                EC_Eligibility_4 = SERC_CleanPower)
     } 
+    # Retrofit and Repowering
+    for (x in c('retrofitngcc', 'retrofitngct','repowercoal')) {
+      if (x %in% c('retrofitngcc', 'retrofitngct')) {
+        cost_col = grep('Retro1_Inv_Cost_per_MWyr|Retro2_Inv_Cost_per_MWyr',colnames(gen_info))
+      }
+      if (x %in% c('repowercoal', 'retrofitngct')) {
+        cost_col = grep('Retro1_Inv_Cost_per_MWyr',colnames(gen_info))
+      }
+      retrofit_row = which(grepl(x, gen_info$Resource))
+      original_inv_cost_col = grep('^Inv_Cost_per_MWyr',colnames(gen_info))
+      gen_info[retrofit_row, cost_col] <- gen_info[retrofit_row, original_inv_cost_col]
+      gen_info[retrofit_row, original_inv_cost_col] <- 0
+    }
+    
+    if (grepl('NJ100', foldernames$case_description[i])) {
+      if (y == 2035) {
+        caprescols = grep('CapRes', colnames(gen_info))
+        njcoalngccrows = setdiff(intersect(grep('natural_gas|coal|petroleum|naturalgas_',gen_info$Resource),
+                                           grep('PJM_NJ',gen_info$region)),
+                                 grep('naturalgas_ccccs', gen_info$Resource))
+        gen_info[njcoalngccrows, caprescols] <- 0
+      }
+    }    
     
     write_csv(gen_info, paste0(new_folder,"/Inputs/Generators_data.csv"))
     
@@ -342,6 +454,25 @@ for (y in years) {
                                   CO2Tax = rep(taxlevel, 15))) %>%
         write_csv(paste0(new_folder,"/Inputs/CO2_tax.csv"))
     }
+    
+    # Max Investment
+    setting$MaxInvReq = as.integer(1)
+    if (y == 2025) {
+      max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2025.csv'),
+                          col_types = cols()) %>%
+        write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
+    }
+    if (y == 2030) {
+      max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2030.csv'),
+                         col_types = cols()) %>%
+        write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
+    }
+    if (y == 2035) {
+      max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2035.csv'),
+                         col_types = cols()) %>%
+        write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
+    }
+    
     
     # Write yaml
     write_yaml(setting, paste0(new_settings_folder,'/genx_settings.yml'))
