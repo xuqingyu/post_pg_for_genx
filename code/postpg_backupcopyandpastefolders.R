@@ -61,7 +61,7 @@ for (y in years) {
     # 15.5 hour is the national average of duration in U.S., reported by Sandia
     psrowscapmwh = 15.5*gen_info$Existing_Cap_MW 
     gen_info <- gen_info %>%
-      mutate(Min_Duration = replace(Min_Duration, psrows, 14),
+      mutate(Min_Duration = replace(Min_Duration, psrows, 11),
              Max_Duration = replace(Max_Duration, psrows, 16),
              Existing_Cap_MWh = replace(Existing_Cap_MWh, psrows, psrowscapmwh[psrows]))
     print('Existing wind PTC')
