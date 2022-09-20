@@ -419,6 +419,9 @@ for (y in years) {
         gen_info[njcoalngccrows, caprescols] <- 0
       }
     }    
+    # Fix Min Power of on thermal unit
+    nonthermals = which(gen_info$THERM == 0)
+    gen_info$Min_Power[nonthermals] <- 0
     
     write_csv(gen_info, paste0(new_folder,"/Inputs/Generators_data.csv"))
     
