@@ -18,7 +18,7 @@ frompgfolder = 'PJM_Final_raw/'
 fromfolder = 'PJM_Final_raw_modified'
 ngprice_variation = 'census_division' # chose from 'national' and 'census_division'
 ngpriceadder = 3
-min_trans_upperbound = cbind(year = years, min = c(1500, 1500, 1500)) %>% 
+min_trans_upperbound = cbind(year = years, min = c(750, 750, 750)) %>% 
   as_tibble() %>% 
   mutate(min = as.numeric(min))
 
