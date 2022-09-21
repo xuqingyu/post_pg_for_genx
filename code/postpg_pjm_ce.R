@@ -433,7 +433,7 @@ for (y in years) {
         gen_info[njcoalngccrows, caprescols] <- 0
         gen_info <- gen_info %>%
           mutate(ESR_9 = (grepl('PJM_NJ',gen_info$region) * ESR_2 + 
-                            !grepl('PJM_NJ',gen_info$region) * ESR_1), # NJ's CES only supports renewable and instate clean firm capacity
+                            (!grepl('PJM_NJ',gen_info$region)) * ESR_1), # NJ's CES only supports renewable and instate clean firm capacity
                  ESR_10 = grepl('PJM_NJ',gen_info$region) * ESR_2) # Instate CES
       }
     }    
