@@ -212,14 +212,27 @@ for (y in years) {
       }
     }
     if (grepl('NJ100', foldernames$case_description[i])) {
-      if (y ==2025) {njrpstarget = 0.45; njcestarget = 0.50}
-      if (y ==2030) {njrpstarget = 0.60; njcestarget = 0.75}
-      if (y ==2035) {njrpstarget = 0.75; njcestarget = 1.00}
-      ces_table = read_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"), 
-                           col_types = cols()) %>%
-        mutate(ESR_1 = replace(ESR_1, grepl('PJM_NJ', `Region_description`), njrpstarget),
-               ESR_2 = replace(ESR_2, grepl('PJM_NJ', `Region_description`), njcestarget)) %>%
-        write_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"))
+      # if (y ==2025) {njrpstarget = 0.45; njcestarget = 0.50}
+      # if (y ==2030) {njrpstarget = 0.60; njcestarget = 0.75}
+      if (y ==2035) {
+        njrpstarget = 0.50; 
+        njcestarget = 1.00;
+        njcesinstatetarget = 0.50;
+        ces_table = read_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"), 
+                             col_types = cols()) %>%
+          mutate(ESR_1 = replace(ESR_1, grepl('PJM_NJ', `Region_description`), njrpstarget)) %>%
+          mutate(ESR_9 = 0, ESR_10 = 0) %>%
+          mutate(ESR_9 = replace(ESR_9, grepl('PJM_NJ', `Region_description`), njcestarget),
+                 ESR_10 = replace(ESR_10, grepl('PJM_NJ', `Region_description`), njcesinstatetarget),) %>%
+          write_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"))
+        esr_slack = read_csv(paste0(new_folder,"/Inputs/Energy_share_requirement_slack.csv"), 
+                             col_types = cols())
+        njrows = as_tibble(cbind(ESR_Constraint = c('ESR_9','ESR_10'), 
+                                Constraint_description = c('NJ_InstateRPS', 'NJ_InstateCES'),
+                                PriceCap = c(1500, 1500)))
+        esr_slack <- rbind(esr_slack, njrows) %>%
+          write_csv(paste0(new_folder,"/Inputs/Energy_share_requirement_slack.csv"))
+      }
     }
     
     # CO2 Credit
@@ -418,6 +431,10 @@ for (y in years) {
                                            grep('PJM_NJ',gen_info$region)),
                                  grep('naturalgas_ccccs', gen_info$Resource))
         gen_info[njcoalngccrows, caprescols] <- 0
+        gen_info <- gen_info %>%
+          mutate(ESR_9 = (grepl('PJM_NJ',gen_info$region) * ESR_2 + 
+                            !grepl('PJM_NJ',gen_info$region) * ESR_1), # NJ's CES only supports renewable and instate clean firm capacity
+                 ESR_10 = grepl('PJM_NJ',gen_info$region) * ESR_2) # Instate CES
       }
     }    
     # Fix Min Power of on thermal unit
