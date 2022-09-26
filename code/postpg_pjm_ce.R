@@ -258,8 +258,8 @@ for (y in years) {
         min_tech = read_csv(paste0(misc_filefolder,'/mincap2030_yesnuclearsupport.csv'), 
                             col_types = cols())
       } 
-      if (y == 2035) {
-        min_tech = read_csv(paste0(misc_filefolder,'/mincap2035_yesnuclearsupport.csv'), 
+      if (y == 2035) { # Nuclear supports ends in 2030
+        min_tech = read_csv(paste0(misc_filefolder,'/mincap2035_nonuclearsupport.csv'), 
                             col_types = cols())
       }      
     } else {
@@ -372,13 +372,15 @@ for (y in years) {
         write_csv(paste0(new_folder,"/Inputs/Network.csv"))
     }
     if (grepl('NJ100', foldernames$case_description[i])) {
-      # New Jersey network unlimited upper bound
-      network = read_csv(paste0(new_folder,"/Inputs/Network.csv"), 
-                         col_types = cols());
-      njland_coast = which(network$transmission_path_name == 'PJM_NJCoast_to_PJM_NJLand')
-      network$Line_Max_Reinforcement_MW[njland_coast] = 1e5
-      network <- network %>%
-        write_csv(paste0(new_folder,"/Inputs/Network.csv"))
+      if (y == 2035) {
+        # New Jersey network unlimited upper bound
+        network = read_csv(paste0(new_folder,"/Inputs/Network.csv"), 
+                           col_types = cols());
+        njland_coast = which(network$transmission_path_name == 'PJM_NJCoast_to_PJM_NJLand')
+        network$Line_Max_Reinforcement_MW[njland_coast] = 1e5
+        network <- network %>%
+          write_csv(paste0(new_folder,"/Inputs/Network.csv"))
+      }
     }    
     
     # Generator data.csv
