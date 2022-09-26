@@ -388,7 +388,7 @@ for (y in years) {
                           col_types = cols())
     # Add nc OSW column
     ncoswrows = which(grepl('offshore|offshore',geninfo$Resource) &
-                        geninfo$region = 'SC_VACA')
+                        geninfo$region == 'SC_VACA')
     gen_info <- gen_info %>%
       mutate(MinCapTag_22 = as.integer(0)) %>%
       mutate(MinCapTag_22 = replace(MinCapTag_22, ncoswrows, as.integer(1)))
