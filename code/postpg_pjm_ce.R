@@ -386,6 +386,13 @@ for (y in years) {
     # Generator data.csv
     gen_info = read_csv(paste0(new_folder,"/Inputs/Generators_data.csv"), 
                           col_types = cols())
+    # Add nc OSW column
+    ncoswrows = which(grepl('offshore|offshore',geninfo$Resource) &
+                        geninfo$region = 'SC_VACA')
+    gen_info <- gen_info %>%
+      mutate(MinCapTag_22 = as.integer(0)) %>%
+      mutate(MinCapTag_22 = replace(MinCapTag_22, ncoswrows, as.integer(1)))
+      
     if (y == 2030) {
       mga = read_csv(paste0(misc_filefolder,'/mga_columns.csv'), 
                      col_types = cols())
