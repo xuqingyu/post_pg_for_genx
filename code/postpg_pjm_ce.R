@@ -281,10 +281,12 @@ for (y in years) {
                             col_types = cols())
       } 
     }
-    if (grepl('NJ100')) {
-      if (y == 2035) {
-        njnuclearrow = which(min_tech$Constraint_Description == 'NJ_Nuclear')
-        min_tech$Min_MW[njnuclearrow] = 3625
+    if (grepl('NJ100', foldernames$case_description[i])) {
+      if (!grepl('nonjnuclearsupport', foldernames$case_description[i])) {
+        if (y == 2035) {
+          njnuclearrow = which(min_tech$Constraint_Description == 'NJ_Nuclear')
+          min_tech$Min_MW[njnuclearrow] = 3625
+        }
       }
     }
     # Modify Clean Capacity mechanism
