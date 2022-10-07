@@ -4,7 +4,7 @@ library('yaml')
 
 # workingfolder <- "/Users/qingyuxu/Dropbox (Princeton)/PJM/GenX_PJM_Data/2022_PJM_CE/"
 workingfolder <- "/tigress/qingyux/GenX/PJM/2022_PJM_CE/"
-foldername_fn <- "2022-09-09_names_createnewfolder.csv"
+foldername_fn <- "2022-10-06_names_createnewfolder.csv"
 miscfoldername <- "PJM_misc_files/"
 files_to_copy_from_misc <- c('Capacity_reserve_margin_slack.csv',
                             'CO2_cap_slack.csv',

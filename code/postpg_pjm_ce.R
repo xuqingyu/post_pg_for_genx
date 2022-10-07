@@ -217,7 +217,7 @@ for (y in years) {
       if (y ==2035) {
         njrpstarget = 0.50; 
         njcestarget = 1.00;
-        njcesinstatetarget = 0.50;
+        njcesinstatetarget = 0;
         ces_table = read_csv(paste0(new_folder,"/Inputs/Energy_share_requirement.csv"), 
                              col_types = cols()) %>%
           mutate(ESR_1 = replace(ESR_1, grepl('PJM_NJ', `Region_description`), njrpstarget)) %>%
@@ -259,8 +259,13 @@ for (y in years) {
                             col_types = cols())
       } 
       if (y == 2035) { # Nuclear supports ends in 2030
-        min_tech = read_csv(paste0(misc_filefolder,'/mincap2035_nonuclearsupport.csv'), 
-                            col_types = cols())
+        if (grepl('nuclearsupport', foldernames$case_description[i])) {
+          min_tech = read_csv(paste0(misc_filefolder,'/mincap2035_yesnuclearsupport.csv'), 
+                              col_types = cols())
+        } else {
+          min_tech = read_csv(paste0(misc_filefolder,'/mincap2035_nonuclearsupport.csv'), 
+                              col_types = cols())
+        }
       }      
     } else {
       if (y == 2025) {
@@ -276,7 +281,12 @@ for (y in years) {
                             col_types = cols())
       } 
     }
-    
+    if (grepl('NJ100')) {
+      if (y == 2035) {
+        njnuclearrow = which(min_tech$Constraint_Description == 'NJ_Nuclear')
+        min_tech$Min_MW[njnuclearrow] = 3625
+      }
+    }
     # Modify Clean Capacity mechanism
     CAPCESStringlist = paste0('CECAP',c(1:9))
     CAPCESRatelist = seq(55,95,5)/100
@@ -334,15 +344,15 @@ for (y in years) {
     }
     
     if (y == 2035) {
-      if (grepl('NJ100', foldernames$case_description[i])) {
-        max_tech = read_csv(paste0(misc_filefolder,'/max_cap_ira_2035_nj100.csv'),
-                            col_types = cols()) %>%
-          write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))        
-      } else {
+      # if (grepl('NJ100', foldernames$case_description[i])) {
+      #   max_tech = read_csv(paste0(misc_filefolder,'/max_cap_ira_2035_nj100.csv'),
+      #                       col_types = cols()) %>%
+      #     write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))        
+      # } else {
         max_tech = read_csv(paste0(misc_filefolder,'/max_cap_ira_2035.csv'),
                             col_types = cols()) %>%
           write_csv(paste0(new_folder,"/Inputs/Maximum_capacity_limit.csv"))
-      }
+      # }
     }
     
     # Network
@@ -382,7 +392,15 @@ for (y in years) {
           write_csv(paste0(new_folder,"/Inputs/Network.csv"))
       }
     }    
-    
+    if (grepl('unlimitedtrans', foldernames$case_description[i])) {
+      if (y == 2035) {
+        network = read_csv(paste0(new_folder,"/Inputs/Network.csv"), 
+                           col_types = cols());
+        network$Line_Max_Reinforcement_MW = 1e5
+        network <- network %>%
+          write_csv(paste0(new_folder,"/Inputs/Network.csv"))
+      }
+    }    
     # Generator data.csv
     gen_info = read_csv(paste0(new_folder,"/Inputs/Generators_data.csv"), 
                           col_types = cols())
