@@ -531,6 +531,49 @@ for (y in years) {
         write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
     }
     
+    # Time experience
+    timetext = "23:00:00"
+    if (grepl('Y1', foldernames$case_description[i])) {
+      setting$`OperationWrapping` = as.integer(0)
+      timetext = "23:59:00"
+    }
+    if (grepl('D1|D2|D3|D4|D7|W1', foldernames$case_description[i])) {
+      timetext = "2:59:00"
+    }
+    if (grepl('D14|W2', foldernames$case_description[i])) {
+      timetext = "4:00:00"
+    }
+    if (grepl('D21|D28|W3|W4|M1', foldernames$case_description[i])) {
+      timetext = "6:00:00"
+    }
+    if (grepl('D56|W8|M2', foldernames$case_description[i])) {
+      timetext = "8:00:00"
+    }
+    if (grepl('D112|D224|D364|W16|W32|W52|M4|M8|M13', foldernames$case_description[i])) {
+      timetext = "23:59:00"
+    }
+    modifysh <- file(paste0(new_folder,'/',name_of_shell))
+    writeLines(c(
+      "#!/bin/bash",
+      paste0("#SBATCH --job-name=",substr(foldernames$case_id[i],1,6),"              # create a short name for your job"),
+      "#SBATCH --nodes=1                           # node count",
+      "#SBATCH --ntasks=1                          # total number of tasks across all nodes",
+      "#SBATCH --cpus-per-task=8                   # cpu-cores per task (>1 if multi-threaded tasks)",
+      "#SBATCH --mem-per-cpu=15G                    # memory per cpu-core",
+      # "#SBATCH --time=23:00:00                     # total run time limit (HH:MM:SS)",
+      paste0("#SBATCH --time=",timetext,              "# total run time limit (HH:MM:SS)"),
+      "#SBATCH --output=\"test.out\" ",
+      "#SBATCH --error=\"test.err\" ",
+      "#SBATCH --mail-type=end                    # notifications for job done & fail",
+      "#SBATCH --mail-user=qingyux@princeton.edu  # send-to address",
+      "module purge",
+      "module add julia/1.6.1",
+      "module add CPLEX/12.9.0",
+      "module add gurobi/8.1.1",
+      paste0("julia --project=\"/home/qingyux/GenX\" ", name_of_runfile),
+      "date"
+    ), modifysh)
+    close(modifysh)
     
     # Write yaml
     write_yaml(setting, paste0(new_settings_folder,'/genx_settings.yml'))
