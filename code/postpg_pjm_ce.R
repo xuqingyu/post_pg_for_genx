@@ -561,7 +561,7 @@ for (y in years) {
       "#SBATCH --cpus-per-task=8                   # cpu-cores per task (>1 if multi-threaded tasks)",
       "#SBATCH --mem-per-cpu=15G                    # memory per cpu-core",
       # "#SBATCH --time=23:00:00                     # total run time limit (HH:MM:SS)",
-      paste0("#SBATCH --time=",timetext,              "# total run time limit (HH:MM:SS)"),
+      paste0("#SBATCH --time=",timetext,              "      # total run time limit (HH:MM:SS)"),
       "#SBATCH --output=\"test.out\" ",
       "#SBATCH --error=\"test.err\" ",
       "#SBATCH --mail-type=end                    # notifications for job done & fail",
