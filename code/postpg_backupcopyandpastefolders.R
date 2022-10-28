@@ -25,12 +25,19 @@ for (y in years) {
     # calculate prior capacity factor
     print('calculate prior capacity factor')
     # Read in the load profile to construct the time-weight
-    t_load = read_csv(paste0(RunFdr,"Load_data.csv"), 
-                      col_types = cols())
-    n_hour_per_period = t_load$Timesteps_per_Rep_Period[1]
-    sub_weights = t_load$Sub_Weights %>% na.omit()
-    time_weight = rep(sub_weights, each = n_hour_per_period)/n_hour_per_period
-    n_hour_modeled = sum(time_weight)
+    reprepoint_fn <- paste0(RunFdr,'/Representative_Period.csv')
+    
+    if (file.exists(reprepoint_fn)) {
+      t_load = read_csv(paste0(RunFdr,"Load_data.csv"), 
+                        col_types = cols())
+      n_hour_per_period = t_load$Timesteps_per_Rep_Period[1]
+      sub_weights = t_load$Sub_Weights %>% na.omit()
+      time_weight = rep(sub_weights, each = n_hour_per_period)/n_hour_per_period
+      n_hour_modeled = sum(time_weight)
+    } else {
+      time_weight = rep(1,8760)
+      n_hour_modeled = sum(time_weight)
+    }
     # Read in the variability 
     gen_var = read_csv(paste0(RunFdr,"Generators_variability.csv"), 
                        col_types = cols()) %>%

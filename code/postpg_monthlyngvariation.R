@@ -13,8 +13,9 @@ if (grepl("superhighngcost",RunFdr)) {
 fuel_rowone <- read_csv(paste0(RunFdr,'/Fuels_data.csv'), col_types = cols())[1,] 
 fuel_order = colnames(fuel_price)[-1]
 reprepoint_fn <- paste0(RunFdr,'/Representative_Period.csv')
+
 if (file.exists(reprepoint_fn)) {
-  reprepoint <- read_csv(paste0(RunFdr,'/Representative_Period.csv'), 
+  reprepoint <- read_csv(reprepoint_fn, 
                          col_types = cols())
   rep_hour <- select(read_csv(paste0(RunFdr,'/Load_data.csv'), 
                               col_types = cols()), 
