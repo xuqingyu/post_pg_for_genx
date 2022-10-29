@@ -533,15 +533,17 @@ for (y in years) {
     
     # Time experience
     timetext = "23:00:00"
+    memerorypercore = '15G'
+    cpu = '8'
     if (grepl('Y1', foldernames$case_description[i])) {
       setting$`OperationWrapping` = as.integer(0)
       timetext = "23:59:00"
     }
     if (grepl('D1|D2|D3|D4|D7|W1', foldernames$case_description[i])) {
-      timetext = "2:59:00"
+      timetext = "2:00:00"
     }
     if (grepl('D14|W2', foldernames$case_description[i])) {
-      timetext = "4:00:00"
+      timetext = "2:00:00"
     }
     if (grepl('D21|D28|W3|W4|M1', foldernames$case_description[i])) {
       timetext = "6:00:00"
@@ -549,8 +551,12 @@ for (y in years) {
     if (grepl('D56|W8|M2', foldernames$case_description[i])) {
       timetext = "8:00:00"
     }
-    if (grepl('D112|D224|D364|W16|W32|W52|M4|M8|M13', foldernames$case_description[i])) {
+    if (grepl('D112|D224|W16|W32|M4|M8', foldernames$case_description[i])) {
       timetext = "23:59:00"
+    }
+    if (grepl('D364|W52|M13', foldernames$case_description[i])) {
+      timetext = "23:59:00"
+      memerorypercore = '20G'
     }
     modifysh <- file(paste0(new_folder,'/',name_of_shell))
     writeLines(c(
@@ -558,8 +564,10 @@ for (y in years) {
       paste0("#SBATCH --job-name=",substr(foldernames$case_id[i],1,6),"              # create a short name for your job"),
       "#SBATCH --nodes=1                           # node count",
       "#SBATCH --ntasks=1                          # total number of tasks across all nodes",
-      "#SBATCH --cpus-per-task=8                   # cpu-cores per task (>1 if multi-threaded tasks)",
-      "#SBATCH --mem-per-cpu=15G                    # memory per cpu-core",
+      # "#SBATCH --cpus-per-task=8                   # cpu-cores per task (>1 if multi-threaded tasks)",
+      paste0("#SBATCH --cpus-per-task=",cpu,              "      # cpu-cores per task (>1 if multi-threaded tasks)"),
+      # "#SBATCH --mem-per-cpu=15G                    # memory per cpu-core",
+      paste0("#SBATCH --mem-per-cpu=", memerorypercore,              "      # memory per cpu-core"),
       # "#SBATCH --time=23:00:00                     # total run time limit (HH:MM:SS)",
       paste0("#SBATCH --time=",timetext,              "      # total run time limit (HH:MM:SS)"),
       "#SBATCH --output=\"test.out\" ",
