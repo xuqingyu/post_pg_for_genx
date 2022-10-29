@@ -543,11 +543,11 @@ for (y in years) {
         setting$OperationWrapping = as.integer(1)
         # change the rep period and other so that 
         # the full year data can also work with wraping
-        t_load = read_csv(paste0(new_folder,"/Load_data.csv"), 
+        t_load = read_csv(paste0(new_folder,"/Inputs/Load_data.csv"), 
                           col_types = cols())
         t_load$Timesteps_per_Rep_Period[1] <- 8760
         t_load$Sub_Weights[1] <- 8760
-        write_csv(t_load, paste0(new_folder,"/Load_data.csv"), na = "")
+        write_csv(t_load, paste0(new_folder,"/Inputs/Load_data.csv"), na = "")
         # copy the Period_map.csv
         periodmap = read_csv(paste0(misc_filefolder,'/Period_map_y1w.csv'),
                            col_types = cols()) %>%
