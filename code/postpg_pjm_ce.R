@@ -536,8 +536,27 @@ for (y in years) {
     memerorypercore = '15G'
     cpu = '8'
     if (grepl('Y1', foldernames$case_description[i])) {
-      setting$`OperationWrapping` = as.integer(0)
+      setting$OperationWrapping = as.integer(0)
       timetext = "23:59:00"
+      memerorypercore = '30G'
+      if (grepl('Y1w', foldernames$case_description[i])) {
+        setting$OperationWrapping = as.integer(1)
+        # change the rep period and other so that 
+        # the full year data can also work with wraping
+        t_load = read_csv(paste0(new_folder,"Load_data.csv"), 
+                          col_types = cols())
+        t_load$Timesteps_per_Rep_Period[1] <- 8760
+        t_load$Sub_Weights[1] <- 8760
+        write_csv(t_load, paste0(new_folder,"Load_data.csv"), na = "")
+        # copy the Period_map.csv
+        periodmap = read_csv(paste0(misc_filefolder,'/Period_map_y1w.csv'),
+                           col_types = cols()) %>%
+          write_csv(paste0(new_folder,"/Inputs/Period_map.csv"))
+        # copy the representative point file
+        reppoint = read_csv(paste0(misc_filefolder,'/Representative_Period_y1w.csv'),
+                             col_types = cols()) %>%
+          write_csv(paste0(new_folder,"/Inputs/Representative_Period.csv"))
+      }
     }
     if (grepl('D1|D2|D3|D4|D7|W1', foldernames$case_description[i])) {
       timetext = "2:00:00"
