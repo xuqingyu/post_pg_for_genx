@@ -542,7 +542,7 @@ for (y in years) {
       setting$OperationWrapping = as.integer(0)
       timetext = "48:00:00"
       cpu = '12'
-      memerorypercore = '25G'
+      memerorypercore = '27G'
       if (grepl('Y1w', foldernames$case_description[i])) {
         setting$OperationWrapping = as.integer(1)
         # change the rep period and other so that 
@@ -583,7 +583,7 @@ for (y in years) {
     }
     if (grepl('M13', foldernames$case_description[i])) {
       timetext = "23:59:00"
-      memerorypercore = '30G'
+      memerorypercore = '40G'
     }
     modifysh <- file(paste0(new_folder,'/',name_of_shell))
     writeLines(c(
