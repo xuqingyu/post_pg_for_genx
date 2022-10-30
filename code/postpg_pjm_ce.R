@@ -542,7 +542,7 @@ for (y in years) {
       setting$OperationWrapping = as.integer(0)
       timetext = "48:00:00"
       cpu = '12'
-      memerorypercore = '20G'
+      memerorypercore = '25G'
       if (grepl('Y1w', foldernames$case_description[i])) {
         setting$OperationWrapping = as.integer(1)
         # change the rep period and other so that 
