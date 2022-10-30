@@ -514,22 +514,25 @@ for (y in years) {
     }
     
     # Max Investment
-    setting$MaxInvReq = as.integer(1)
-    if (y == 2025) {
-      max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2025.csv'),
-                          col_types = cols()) %>%
-        write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
-    }
-    if (y == 2030) {
-      max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2030.csv'),
-                         col_types = cols()) %>%
-        write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
-    }
-    if (y == 2035) {
-      max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2035.csv'),
-                         col_types = cols()) %>%
-        write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
-    }
+    setting$MaxInvReq = as.integer(0)
+    if (length(years) ==3) {
+      setting$MaxInvReq = as.integer(1)
+      if (y == 2025) {
+        max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2025.csv'),
+                           col_types = cols()) %>%
+          write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
+      }
+      if (y == 2030) {
+        max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2030.csv'),
+                           col_types = cols()) %>%
+          write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
+      }
+      if (y == 2035) {
+        max_inv = read_csv(paste0(misc_filefolder,'/max_inv_2035.csv'),
+                           col_types = cols()) %>%
+          write_csv(paste0(new_folder,"/Inputs/Maximum_investment_limit.csv"))
+      }
+    } 
     
     # Time experience
     timetext = "23:00:00"
